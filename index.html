@@ -11,7 +11,8 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
         /* ロゴ画像用のスタイル */
-        .logo { max-width: 200px; height: auto; margin-bottom: 20px; }
+        .logo { max-width: 200px; height: auto; margin-bottom: 20px; transition: opacity 0.2s; }
+        .logo:hover { opacity: 0.8; }
 
         .score-bar { display: flex; justify-content: space-around; background: #2d3748; color: white; padding: 12px; border-radius: 12px; margin-bottom: 20px; font-weight: bold; font-size: 18px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
         .q-text { font-size: 34px; font-weight: bold; margin: 40px 0; color: #1a202c; min-height: 45px; line-height: 1.2; }
@@ -35,7 +36,9 @@
 <div id="app">
     <div id="feedback"></div>
     <div id="sc-start" class="screen active">
-        <img src="rogo.png" alt="Logo" class="logo">
+        <a href="https://manabiya-tsubame.com/" target="_blank">
+            <img src="rogo.png" alt="Logo" class="logo">
+        </a>
         
         <h1 style="color:#2d3748; margin-bottom:10px; line-height:1.2;">NEW HORIZON<br>中１英単語問題</h1>
         <p style="color:#718096; margin-bottom:30px;">50問チャレンジ！</p>
