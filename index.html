@@ -2,321 +2,228 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="数学マスター">
-    
-    <title>数学マスター極：符号の試練</title>
+    <title>NEW HORIZON 中１英単語問題</title>
     <style>
-        body { 
-            font-family: sans-serif; 
-            background-color: #eef2f3; 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: flex-start;
-            min-height: 100vh; 
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .container { 
-            background: white; 
-            padding: 15px; 
-            border-radius: 20px; 
-            width: 95%; 
-            max-width: 450px; 
-            margin: 10px auto; 
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-            box-sizing: border-box; 
-            position: relative;
-        }
-
-        /* ロゴ用のスタイル追加 */
-        .logo-container {
-            text-align: center;
-            margin-bottom: 5px;
-        }
-        .logo-img {
-            max-width: 150px; /* 必要に応じてサイズ調整してください */
-            height: auto;
-        }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #e0e7ff; display: flex; justify-content: center; padding: 20px; }
+        #app { background: white; padding: 30px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); width: 100%; max-width: 450px; text-align: center; position: relative; border: 4px solid #fff; }
+        .screen { display: none; }
+        .active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        .level-btns { display: flex; gap: 4px; margin-bottom: 5px; z-index: 10; }
-        .btn { padding: 8px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; font-size: 0.8rem; flex: 1; background-color: #ddd; -webkit-tap-highlight-color: transparent; }
-        .level-btn.active { background-color: #2196f3; color: white; box-shadow: 0 3px 0 #1976d2; }
+        /* ロゴ画像用のスタイル */
+        .logo { max-width: 200px; height: auto; margin-bottom: 20px; }
 
-        .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; z-index: 10; }
-        .reset-btn { background-color: #f44336; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; border: none; cursor: pointer; }
-
-        .info { display: flex; justify-content: space-around; font-size: 0.9rem; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px; }
-        
-        .problem-box { 
-            background: #f8f9fa; 
-            border-radius: 12px; 
-            padding: 15px 10px; 
-            flex-grow: 1; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            border: 1px solid #e0e0e0; 
-            margin-bottom: 10px; 
-            position: relative; 
-            min-height: 120px; 
-        }
-        .problem { font-size: 2.2rem; font-weight: bold; color: #2c3e50; text-align: center; }
-        
-        #feedback-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; pointer-events: none; opacity: 0; transform: scale(0.5); transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: rgba(255,255,255,0.8); }
-        #feedback-overlay.show { opacity: 1; transform: scale(1); }
-        #feedback-text { font-size: 3.5rem; font-weight: 900; text-align: center; line-height: 1.1; -webkit-text-stroke: 4px white; paint-order: stroke; }
-
-        .hint { background: rgba(255, 249, 196, 1); padding: 8px; border-radius: 8px; font-size: 0.85rem; width: 90%; z-index: 10; margin-top: 10px; border: 1px solid #ffd600; text-align: center; font-weight: bold; }
-
-        .display-area { font-size: 2.2rem; background: #fff; border: 2px solid #cbd5e0; border-radius: 10px; margin-bottom: 10px; height: 3.5rem; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #2196f3; flex-shrink: 0; }
-
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; flex-shrink: 0; margin-bottom: 5px; }
-        .num-btn { background-color: #fcfcfc; border: 1px solid #ddd; border-radius: 10px; font-size: 1.5rem; padding: 15px 0; font-weight: bold; cursor: pointer; box-shadow: 0 3px 0 #ccc; -webkit-tap-highlight-color: transparent; }
-        .num-btn:active { transform: translateY(2px); box-shadow: none; background-color: #eee; }
-        .op-btn { background-color: #ff9800; color: white; border: none; box-shadow: 0 3px 0 #ef6c00; }
-        .clear-btn { background-color: #9e9e9e; color: white; border: none; box-shadow: 0 3px 0 #757575; }
-        .enter-btn { background-color: #4caf50; color: white; border: none; grid-column: span 2; font-size: 1.5rem; box-shadow: 0 4px 0 #388e3c; margin-top: 5px; padding: 15px 0; }
-
-        .result-screen { display: none; text-align: center; justify-content: center; align-items: center; flex-direction: column; height: 90vh; background: #764ba2; color: white; border-radius: 20px; }
-        
-        .shake { animation: shake 0.3s; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } }
-        .confetti { position: absolute; width: 8px; height: 8px; z-index: 101; border-radius: 50%; }
+        .score-bar { display: flex; justify-content: space-around; background: #2d3748; color: white; padding: 12px; border-radius: 12px; margin-bottom: 20px; font-weight: bold; font-size: 18px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .q-text { font-size: 34px; font-weight: bold; margin: 40px 0; color: #1a202c; min-height: 45px; line-height: 1.2; }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .opt-btn { height: 80px; font-size: 17px; cursor: pointer; border: 2px solid #e2e8f0; border-radius: 16px; background: #f8fafc; transition: all 0.2s; font-weight: 600; color: #4a5568; }
+        .opt-btn:hover:not(:disabled) { background: #edf2f7; border-color: #3182ce; transform: translateY(-2px); }
+        .opt-btn:disabled { cursor: default; }
+        .correct-ans { background: #48bb78 !important; border-color: #38a169 !important; color: white !important; }
+        .wrong-ans { background: #f56565 !important; border-color: #e53e3e !important; color: white !important; }
+        #feedback { font-size: 100px; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; opacity: 0; z-index: 100; }
+        .show-fb { animation: fb-ani 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes fb-ani { 0% { opacity:0; scale:0.3; } 50% { opacity:1; scale:1.2; } 100% { opacity:0; scale:1; } }
+        .mistake-box { text-align: left; background: #fff5f5; border: 2px solid #fed7d7; padding: 15px; border-radius: 12px; margin: 15px 0; max-height: 200px; overflow-y: auto; }
+        .red-bold { color: #c53030; font-weight: bold; font-size: 15px; margin-bottom: 10px; }
+        .btn-start { background: #4299e1; color: white; border: none; font-size: 20px; padding: 20px; width: 100%; border-radius: 16px; cursor: pointer; font-weight: bold; margin-bottom: 15px; box-shadow: 0 4px 0 #2b6cb0; }
+        .btn-start:active { transform: translateY(3px); box-shadow: none; }
     </style>
 </head>
 <body>
 
-<div class="container" id="game-screen">
-    <div id="feedback-overlay"><div id="feedback-text"></div></div>
-    
-    <div class="logo-container">
-        <img src="rogo.png" alt="Logo" class="logo-img">
+<div id="app">
+    <div id="feedback"></div>
+    <div id="sc-start" class="screen active">
+        <img src="rogo.png" alt="Logo" class="logo">
+        
+        <h1 style="color:#2d3748; margin-bottom:10px; line-height:1.2;">NEW HORIZON<br>中１英単語問題</h1>
+        <p style="color:#718096; margin-bottom:30px;">50問チャレンジ！</p>
+        <button class="btn-start" onclick="initAudio(); startQuiz('ja-en')" style="background:#48bb78; box-shadow: 0 4px 0 #2f855a;">日本語 → 英語</button>
+        <button class="btn-start" onclick="initAudio(); startQuiz('en-ja')" style="background:#805ad5; box-shadow: 0 4px 0 #553c9a;">英語 → 日本語</button>
     </div>
 
-    <div class="level-btns">
-        <button class="btn level-btn active" onclick="selectLevel(1)">Lv.1</button>
-        <button class="btn level-btn" onclick="selectLevel(2)">Lv.2</button>
-        <button class="btn level-btn" onclick="selectLevel(3)">Lv.3</button>
-        <button class="btn level-btn" onclick="selectLevel(4)">Lv.4</button>
-        <button class="btn level-btn" onclick="selectLevel(5)">Lv.5</button>
+    <div id="sc-quiz" class="screen">
+        <div class="score-bar">
+            <span>正解：<span id="cnt-ok">0</span></span>
+            <span style="color:#feb2b2;">ミス：<span id="cnt-ng">0</span></span>
+        </div>
+        <div id="progress" style="font-weight:bold; color:#a0aec0;">1 / 50</div>
+        <div class="q-text" id="q-text"></div>
+        <div class="options" id="options"></div>
     </div>
 
-    <div class="header-controls">
-        <div style="font-size: 0.8rem; color: #666;">Level <span id="current-lv-display">1</span></div>
-        <button class="reset-btn" onclick="resetGame()">やり直す</button>
+    <div id="sc-result" class="screen">
+        <h2 style="font-size:28px;">おつかれさま！</h2>
+        <div id="final-score" style="font-size:24px; margin:20px 0; font-weight:bold; color:#2d3748;"></div>
+        <div id="mistake-area" style="display:none;">
+            <p class="red-bold">間違えた単語は３回ずつ書いて練習しましょう。</p>
+            <div class="mistake-box" id="mistake-list"></div>
+        </div>
+        <button class="btn-start" onclick="goHome()" style="background:#4a5568; box-shadow: 0 4px 0 #2d3748; margin-top:20px;">形式選択に戻る</button>
     </div>
-
-    <div class="info">
-        <div>残り: <span id="q-count">10</span></div>
-        <div style="color:#4caf50">正解: <span id="correct-count">0</span></div>
-        <div style="color:#f44336">ミス: <span id="miss-count">0</span></div>
-    </div>
-
-    <div class="problem-box" id="p-box">
-        <div id="problem" class="problem">...</div>
-        <div id="hint-area" class="hint" style="display:none"></div>
-    </div>
-
-    <div class="display-area" id="display-value"></div>
-
-    <div class="numpad">
-        <button class="num-btn" onclick="inputNum('1')">1</button>
-        <button class="num-btn" onclick="inputNum('2')">2</button>
-        <button class="num-btn" onclick="inputNum('3')">3</button>
-        <button class="num-btn" onclick="inputNum('4')">4</button>
-        <button class="num-btn" onclick="inputNum('5')">5</button>
-        <button class="num-btn" onclick="inputNum('6')">6</button>
-        <button class="num-btn" onclick="inputNum('7')">7</button>
-        <button class="num-btn" onclick="inputNum('8')">8</button>
-        <button class="num-btn" onclick="inputNum('9')">9</button>
-        <button class="num-btn op-btn" onclick="inputNum('-')">ー</button>
-        <button class="num-btn" onclick="inputNum('0')">0</button>
-        <button class="num-btn clear-btn" onclick="clearInput()">C</button>
-        <button class="num-btn enter-btn" id="enter-btn" onclick="checkAnswer()">判定する！</button>
-    </div>
-</div>
-
-<div class="container result-screen" id="result-screen">
-    <h1>試練達成！</h1>
-    <div style="font-size: 5rem; font-weight: 900;"><span id="final-score">0</span>点</div>
-    <p>正解：<span id="final-correct">0</span> / ミス：<span id="final-miss">0</span></p>
-    <button class="btn" style="background-color: #fff; color: #764ba2; width: 80%; padding: 15px; font-size: 1.5rem;" onclick="location.reload()">再挑戦</button>
 </div>
 
 <script>
-    let level = 1;
-    let questionIndex = 0;
-    let correctTotal = 0;
-    let missTotal = 0;
-    let currentAnswer = 0;
-    let currentHint = "";
-    let wrongCountInProblem = 0;
-    let currentInput = "";
-    let totalQuestions = 10;
+// 単語リスト（580語）
+const wordStock = [{en:"about",jp:"〜について"},{en:"active",jp:"活動的な"},{en:"activity",jp:"活動"},{en:"after",jp:"〜のあとに"},{en:"afternoon",jp:"午後"},{en:"again",jp:"もう一度"},{en:"all",jp:"全部の"},{en:"always",jp:"いつも"},{en:"am",jp:"〜です"},{en:"America",jp:"アメリカ"},{en:"animal",jp:"動物"},{en:"apple",jp:"リンゴ"},{en:"April",jp:"4月"},{en:"art",jp:"芸術"},{en:"artist",jp:"芸術家"},{en:"ask",jp:"尋ねる"},{en:"astronaut",jp:"宇宙飛行士"},{en:"August",jp:"8月"},{en:"aunt",jp:"おば"},{en:"autumn",jp:"秋"},{en:"back",jp:"戻って"},{en:"bad",jp:"悪い"},{en:"bag",jp:"かばん"},{en:"ball",jp:"ボール"},{en:"banana",jp:"バナナ"},{en:"baseball",jp:"野球"},{en:"basketball",jp:"バスケ"},{en:"beautiful",jp:"美しい"},{en:"before",jp:"〜の前に"},{en:"begin",jp:"始まる"},{en:"big",jp:"大きい"},{en:"bike",jp:"自転車"},{en:"bird",jp:"鳥"},{en:"birthday",jp:"誕生日"},{en:"black",jp:"黒い"},{en:"blue",jp:"青い"},{en:"book",jp:"本"},{en:"box",jp:"箱"},{en:"breakfast",jp:"朝食"},{en:"brother",jp:"兄弟"},{en:"busy",jp:"忙しい"},{en:"buy",jp:"買う"},{en:"cake",jp:"ケーキ"},{en:"call",jp:"呼ぶ"},{en:"camera",jp:"カメラ"},{en:"can",jp:"できる"},{en:"car",jp:"車"},{en:"cat",jp:"ネコ"},{en:"catch",jp:"捕まえる"},{en:"chair",jp:"椅子"},{en:"child",jp:"子供"},{en:"city",jp:"都市"},{en:"class",jp:"クラス"},{en:"clean",jp:"きれいな"},{en:"clock",jp:"時計"},{en:"cold",jp:"寒い"},{en:"color",jp:"色"},{en:"come",jp:"来る"},{en:"computer",jp:"PC"},{en:"cook",jp:"料理する"},{en:"country",jp:"国"},{en:"cousin",jp:"いとこ"},{en:"cute",jp:"かわいい"},{en:"dance",jp:"踊る"},{en:"date",jp:"日付"},{en:"day",jp:"日"},{en:"December",jp:"12月"},{en:"delicious",jp:"おいしい"},{en:"desk",jp:"机"},{en:"dictionary",jp:"辞書"},{en:"dinner",jp:"夕食"},{en:"do",jp:"する"},{en:"doctor",jp:"医者"},{en:"dog",jp:"イヌ"},{en:"door",jp:"ドア"},{en:"draw",jp:"描く"},{en:"drink",jp:"飲む"},{en:"drive",jp:"運転する"},{en:"early",jp:"早い"},{en:"easy",jp:"簡単な"},{en:"eat",jp:"食べる"},{en:"eight",jp:"8"},{en:"eleven",jp:"11"},{en:"English",jp:"英語"},{en:"enjoy",jp:"楽しむ"},{en:"eraser",jp:"消しゴム"},{en:"evening",jp:"晩"},{en:"every",jp:"毎〜"},{en:"everyone",jp:"皆"},{en:"example",jp:"例"},{en:"eye",jp:"目"},{en:"face",jp:"顔"},{en:"family",jp:"家族"},{en:"famous",jp:"有名な"},{en:"father",jp:"父"},{en:"favorite",jp:"お気に入り"},{en:"February",jp:"2月"},{en:"festival",jp:"祭り"},{en:"field",jp:"分野"},{en:"find",jp:"見つける"},{en:"fine",jp:"元気な"},{en:"finish",jp:"終える"},{en:"fish",jp:"魚"},{en:"five",jp:"5"},{en:"floor",jp:"床"},{en:"flower",jp:"花"},{en:"fly",jp:"飛ぶ"},{en:"food",jp:"食べ物"},{en:"football",jp:"フットボール"},{en:"for",jp:"〜のために"},{en:"Friday",jp:"金曜日"},{en:"friend",jp:"友達"},{en:"from",jp:"〜から"},{en:"fruit",jp:"果物"},{en:"fun",jp:"楽しみ"},{en:"game",jp:"試合"},{en:"garden",jp:"庭"},{en:"get",jp:"得る"},{en:"girl",jp:"女の子"},{en:"give",jp:"与える"},{en:"go",jp:"行く"},{en:"good",jp:"よい"},{en:"grandfather",jp:"祖父"},{en:"grandmother",jp:"祖母"},{en:"green",jp:"緑"},{en:"guitar",jp:"ギター"},{en:"gym",jp:"体育館"},{en:"hair",jp:"髪"},{en:"hand",jp:"手"},{en:"happy",jp:"幸せな"},{en:"hard",jp:"一生懸命"},{en:"have",jp:"持っている"},{en:"he",jp:"彼は"},{en:"hello",jp:"こんにちは"},{en:"help",jp:"手伝う"},{en:"her",jp:"彼女の"},{en:"here",jp:"ここに"},{en:"high",jp:"高い"},{en:"history",jp:"歴史"},{en:"hobby",jp:"趣味"},{en:"home",jp:"家"},{en:"homework",jp:"宿題"},{en:"hope",jp:"望む"},{en:"hospital",jp:"病院"},{en:"hot",jp:"暑い"},{en:"house",jp:"家"},{en:"how",jp:"どのように"},{en:"hundred",jp:"百"},{en:"hungry",jp:"空腹の"},{en:"I",jp:"私は"},{en:"idea",jp:"考え"},{en:"important",jp:"重要な"},{en:"in",jp:"〜の中に"},{en:"interesting",jp:"おもしろい"},{en:"island",jp:"島"},{en:"it",jp:"それは"},{en:"January",jp:"1月"},{en:"Japan",jp:"日本"},{en:"job",jp:"仕事"},{en:"juice",jp:"ジュース"},{en:"July",jp:"7月"},{en:"jump",jp:"跳ぶ"},{en:"June",jp:"6月"},{en:"keep",jp:"保つ"},{en:"key",jp:"鍵"},{en:"kind",jp:"親切な"},{en:"kitchen",jp:"台所"},{en:"know",jp:"知っている"},{en:"lake",jp:"湖"},{en:"large",jp:"大きい"},{en:"last",jp:"最後の"},{en:"learn",jp:"学ぶ"},{en:"leave",jp:"去る"},{en:"left",jp:"左"},{en:"leg",jp:"脚"},{en:"lesson",jp:"授業"},{en:"letter",jp:"手紙"},{en:"library",jp:"図書館"},{en:"like",jp:"〜が好きだ"},{en:"listen",jp:"聞く"},{en:"live",jp:"住む"},{en:"long",jp:"長い"},{en:"look",jp:"見る"},{en:"love",jp:"愛する"},{en:"lunch",jp:"昼食"},{en:"make",jp:"作る"},{en:"man",jp:"男の人"},{en:"many",jp:"多くの"},{en:"map",jp:"地図"},{en:"March",jp:"3月"},{en:"math",jp:"数学"},{en:"May",jp:"5月"},{en:"me",jp:"私を"},{en:"meet",jp:"会う"},{en:"milk",jp:"牛乳"},{en:"Monday",jp:"月曜日"},{en:"money",jp:"お金"},{en:"month",jp:"月"},{en:"morning",jp:"朝"},{en:"mother",jp:"母"},{en:"mountain",jp:"山"},{en:"movie",jp:"映画"},{en:"museum",jp:"博物館"},{en:"music",jp:"音楽"},{en:"my",jp:"私の"},{en:"name",jp:"名前"},{en:"near",jp:"近くに"},{en:"need",jp:"必要とする"},{en:"new",jp:"新しい"},{en:"next",jp:"次の"},{en:"nice",jp:"素敵な"},{en:"night",jp:"夜"},{en:"nine",jp:"9"},{en:"no",jp:"いいえ"},{en:"noon",jp:"正午"},{en:"north",jp:"北"},{en:"not",jp:"〜でない"},{en:"notebook",jp:"ノート"},{en:"November",jp:"11月"},{en:"now",jp:"今"},{en:"number",jp:"数"},{en:"nurse",jp:"看護師"},{en:"often",jp:"しばしば"},{en:"old",jp:"古い"},{en:"on",jp:"〜の上に"},{en:"one",jp:"1つ"},{en:"only",jp:"〜だけ"},{en:"open",jp:"開ける"},{en:"orange",jp:"オレンジ"},{en:"our",jp:"私たちの"},{en:"outside",jp:"外側に"},{en:"park",jp:"公園"},{en:"party",jp:"集い"},{en:"pen",jp:"ペン"},{en:"pencil",jp:"鉛筆"},{en:"people",jp:"人々"},{en:"pet",jp:"ペット"},{en:"phone",jp:"電話"},{en:"photo",jp:"写真"},{en:"piano",jp:"ピアノ"},{en:"picture",jp:"絵"},{en:"pilot",jp:"パイロット"},{en:"place",jp:"場所"},{en:"plan",jp:"計画"},{en:"plane",jp:"飛行機"},{en:"plant",jp:"植物"},{en:"play",jp:"遊ぶ"},{en:"please",jp:"どうぞ"},{en:"pool",jp:"プール"},{en:"popular",jp:"人気の"},{en:"practice",jp:"練習する"},{en:"present",jp:"贈り物"},{en:"pretty",jp:"きれいな"},{en:"push",jp:"押す"},{en:"put",jp:"置く"},{en:"question",jp:"質問"},{en:"quiet",jp:"静かな"},{en:"rabbit",jp:"ウサギ"},{en:"radio",jp:"ラジオ"},{en:"rain",jp:"雨"},{en:"read",jp:"読む"},{en:"ready",jp:"準備ができた"},{en:"really",jp:"本当に"},{en:"red",jp:"赤"},{en:"remember",jp:"覚えている"},{en:"restaurant",jp:"飲食店"},{en:"return",jp:"戻る"},{en:"rice",jp:"米"},{en:"ride",jp:"乗る"},{en:"right",jp:"正しい"},{en:"river",jp:"川"},{en:"road",jp:"道路"},{en:"room",jp:"部屋"},{en:"rule",jp:"規則"},{en:"run",jp:"走る"},{en:"sad",jp:"悲しい"},{en:"salad",jp:"サラダ"},{en:"same",jp:"同じ"},{en:"Saturday",jp:"土曜日"},{en:"say",jp:"言う"},{en:"school",jp:"学校"},{en:"science",jp:"科学"},{en:"sea",jp:"海"},{en:"season",jp:"季節"},{en:"see",jp:"見える"},{en:"sell",jp:"売る"},{en:"send",jp:"送る"},{en:"September",jp:"9月"},{en:"seven",jp:"7"},{en:"she",jp:"彼女は"},{en:"ship",jp:"船"},{en:"shirt",jp:"シャツ"},{en:"shoe",jp:"靴"},{en:"shop",jp:"店"},{en:"short",jp:"短い"},{en:"show",jp:"見せる"},{en:"sick",jp:"病気の"},{en:"side",jp:"側"},{en:"sing",jp:"歌う"},{en:"singer",jp:"歌手"},{en:"sister",jp:"姉妹"},{en:"sit",jp:"座る"},{en:"six",jp:"6"},{en:"sky",jp:"空"},{en:"sleep",jp:"眠る"},{en:"slow",jp:"遅い"},{en:"small",jp:"小さい"},{en:"snow",jp:"雪"},{en:"soccer",jp:"サッカー"},{en:"some",jp:"いくらかの"},{en:"sometimes",jp:"時々"},{en:"song",jp:"歌"},{en:"soon",jp:"すぐに"},{en:"speak",jp:"話す"},{en:"special",jp:"特別な"},{en:"sport",jp:"スポーツ"},{en:"spring",jp:"春"},{en:"star",jp:"星"},{en:"start",jp:"始まる"},{en:"station",jp:"駅"},{en:"stay",jp:"滞在する"},{en:"stop",jp:"止まる"},{en:"store",jp:"店"},{en:"story",jp:"物語"},{en:"strong",jp:"強い"},{en:"student",jp:"生徒"},{en:"study",jp:"勉強する"},{en:"subject",jp:"教科"},{en:"summer",jp:"夏"},{en:"sun",jp:"太陽"},{en:"Sunday",jp:"日曜日"},{en:"sunny",jp:"晴れた"},{en:"sure",jp:"確信して"},{en:"swim",jp:"泳ぐ"},{en:"table",jp:"台"},{en:"take",jp:"取る"},{en:"talk",jp:"話す"},{en:"tall",jp:"高い"},{en:"tea",jp:"お茶"},{en:"teach",jp:"教える"},{en:"teacher",jp:"先生"},{en:"team",jp:"チーム"},{en:"tell",jp:"伝える"},{en:"ten",jp:"10"},{en:"tennis",jp:"テニス"},{en:"test",jp:"検査"},{en:"thank",jp:"感謝する"},{en:"that",jp:"あれ"},{en:"the",jp:"その"},{en:"their",jp:"彼らの"},{en:"them",jp:"彼らを"},{en:"then",jp:"その時"},{en:"there",jp:"そこに"},{en:"these",jp:"これら"},{en:"they",jp:"彼らは"},{en:"thing",jp:"もの"},{en:"think",jp:"考える"},{en:"this",jp:"これ"},{en:"those",jp:"あれら"},{en:"three",jp:"3"},{en:"Thursday",jp:"木曜日"},{en:"ticket",jp:"切符"},{en:"time",jp:"時間"},{en:"tired",jp:"疲れた"},{en:"to",jp:"〜へ"},{en:"today",jp:"今日"},{en:"together",jp:"一緒に"},{en:"tomato",jp:"トマト"},{en:"tomorrow",jp:"明日"},{en:"too",jp:"〜もまた"},{en:"town",jp:"町"},{en:"toy",jp:"玩具"},{en:"train",jp:"列車"},{en:"travel",jp:"旅行する"},{en:"tree",jp:"木"},{en:"trip",jp:"旅行"},{en:"true",jp:"本当の"},{en:"try",jp:"試みる"},{en:"Tuesday",jp:"火曜日"},{en:"turn",jp:"曲がる"},{en:"twelve",jp:"12"},{en:"twenty",jp:"20"},{en:"two",jp:"2"},{en:"umbrella",jp:"傘"},{en:"uncle",jp:"おじ"},{en:"under",jp:"〜の下に"},{en:"understand",jp:"理解する"},{en:"until",jp:"〜まで"},{en:"up",jp:"上に"},{en:"us",jp:"私たちを"},{en:"use",jp:"使う"},{en:"vacation",jp:"休暇"},{en:"vegetable",jp:"野菜"},{en:"very",jp:"とても"},{en:"visit",jp:"訪れる"},{en:"voice",jp:"声"},{en:"wait",jp:"待つ"},{en:"walk",jp:"歩く"},{en:"wall",jp:"壁"},{en:"want",jp:"欲しい"},{en:"warm",jp:"暖かい"},{en:"wash",jp:"洗う"},{en:"watch",jp:"見る"},{en:"water",jp:"水"},{en:"way",jp:"道"},{en:"we",jp:"私たちは"},{en:"wear",jp:"着ている"},{en:"weather",jp:"天気"},{en:"website",jp:"サイト"},{en:"Wednesday",jp:"水曜日"},{en:"week",jp:"週"},{en:"weekend",jp:"週末"},{en:"welcome",jp:"歓迎する"},{en:"well",jp:"上手に"},{en:"went",jp:"goの過去形"},{en:"were",jp:"areの過去形"},{en:"west",jp:"西"},{en:"what",jp:"何"},{en:"when",jp:"いつ"},{en:"where",jp:"どこで"},{en:"which",jp:"どちら"},{en:"white",jp:"白"},{en:"who",jp:"だれ"},{en:"whose",jp:"だれの"},{en:"why",jp:"なぜ"},{en:"will",jp:"〜でしょう"},{en:"win",jp:"勝つ"},{en:"window",jp:"窓"},{en:"winter",jp:"冬"},{en:"with",jp:"と一緒に"},{en:"woman",jp:"女の人"},{en:"wonderful",jp:"すばらしい"},{en:"word",jp:"語"},{en:"work",jp:"働く"},{en:"world",jp:"世界"},{en:"write",jp:"書く"},{en:"year",jp:"年"},{en:"yellow",jp:"黄色"},{en:"yes",jp:"はい"},{en:"yesterday",jp:"昨日"},{en:"you",jp:"あなた"},{en:"young",jp:"若い"},{en:"your",jp:"あなたの"},{en:"zoo",jp:"動物園"}];
 
-    const msgCorrect = ["正解！", "完璧！", "天才！", "神！", "見事！"];
-    const msgWrong = ["ちがうよ", "おしい！", "あれれ？", "よく見て"];
+let state = { mode:'', qNum:0, ok:0, ng:0, current:null, pool:[], mistakes:[], audioCtx:null };
 
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playTone(freq, type, duration, g) {
-        try {
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(g, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration);
-        } catch(e){}
+function initAudio() { if (!state.audioCtx) { state.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } }
+
+function playFunSound(isCorrect) {
+    if (!state.audioCtx) return;
+    const t = state.audioCtx.currentTime;
+    const osc = state.audioCtx.createOscillator();
+    const gain = state.audioCtx.createGain();
+    osc.connect(gain); gain.connect(state.audioCtx.destination);
+    if (isCorrect) {
+        osc.type = 'sine'; const freqs = [880, 1108.73, 1318.51];
+        freqs.forEach((f, i) => { osc.frequency.setValueAtTime(f, t + i * 0.08); });
+        gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.15, t + 0.05); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
+        osc.start(t); osc.stop(t + 0.5);
+    } else {
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(330, t); osc.frequency.exponentialRampToValueAtTime(220, t + 0.4);
+        gain.gain.setValueAtTime(0.05, t); gain.gain.linearRampToValueAtTime(0.03, t + 0.2); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.6);
+        osc.start(t); osc.stop(t + 0.6);
     }
-    function soundCorrect() { playTone(880, 'sine', 0.4, 0.1); setTimeout(() => playTone(1318, 'sine', 0.4, 0.08), 80); }
-    function soundWrong() { playTone(349, 'triangle', 0.3, 0.1); }
-    function soundMiss() { playTone(110, 'sawtooth', 0.8, 0.12); }
+}
 
-    function createConfetti() {
-        const pBox = document.getElementById('p-box');
-        for (let i = 0; i < 25; i++) {
-            const c = document.createElement('div');
-            c.className = 'confetti';
-            c.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-            c.style.left = Math.random() * 100 + '%';
-            c.style.top = Math.random() * 100 + '%';
-            pBox.appendChild(c);
-            setTimeout(() => c.remove(), 600);
-        }
-    }
+function getCategory(word) {
+    const jp = word.jp; const en = word.en.toLowerCase();
+    if (["i", "my", "me", "mine", "you", "your", "he", "his", "him", "she", "her", "we", "our", "us", "they", "their", "them"].includes(en)) return "pronoun";
+    if (jp.includes("曜日") || en.endsWith("day")) return "weekday";
+    if (jp.match(/^[0-9]+$/) || ["one","two","three","four","five","six","seven","eight","nine","ten","hundred"].includes(en)) return "number";
+    if (jp.match(/[1-9]月/) || ["january","february","march","april","may","june","july","august","september","october","november","december"].includes(en)) return "month";
+    if (["soccer","baseball","basketball","tennis","football","sport","game"].includes(en) || jp.includes("球")) return "sport";
+    if (["apple","banana","orange","fruit","tomato"].includes(en) || jp.includes("物")) return "food_fruit";
+    if (jp.match(/父|母|兄|姉|弟|妹|祖父|祖母|おじ|おば|いとこ|兄弟|姉妹/)) return "family";
+    if (jp.match(/赤|青|黄|黒|白|緑|色/)) return "color";
+    return "general";
+}
 
-    function showFeedback(type, text) {
-        const overlay = document.getElementById('feedback-overlay');
-        const fText = document.getElementById('feedback-text');
-        const pText = document.getElementById('problem');
-        overlay.classList.remove('show');
-        pText.classList.remove('shake');
+function startQuiz(mode) {
+    state.mode = mode; state.qNum = 0; state.ok = 0; state.ng = 0; state.mistakes = [];
 
-        if (type === 'correct') {
-            soundCorrect();
-            fText.innerText = text;
-            fText.style.color = '#4caf50';
-            createConfetti();
-        } else if (type === 'wrong') {
-            soundWrong();
-            fText.innerText = text;
-            fText.style.color = '#ff9800';
-            pText.classList.add('shake');
-        } else {
-            soundMiss();
-            fText.innerHTML = `<span style="font-size: 1.8rem;">残念！正解は</span><br>${currentAnswer}`;
-            fText.style.color = '#f44336';
-        }
+    // 1. 英語の綴り(en)の重複を完全に排除
+    const cleanMap = new Map();
+    wordStock.forEach(w => {
+        const key = w.en.toLowerCase();
+        if (!cleanMap.has(key)) cleanMap.set(key, w);
+    });
+    const uniqueList = Array.from(cleanMap.values());
 
-        setTimeout(() => overlay.classList.add('show'), 10);
-        setTimeout(() => { overlay.classList.remove('show'); }, type === 'miss' ? 2000 : 800);
-    }
+    // 2. シャッフルして先頭50問を抽出。これで「同じ単語が2回出る」ことはありません。
+    state.pool = uniqueList.sort(() => Math.random() - 0.5).slice(0, 50);
 
-    function selectLevel(lv) { 
-        level = lv; 
-        totalQuestions = (lv >= 4) ? 5 : 10;
-        document.getElementById('current-lv-display').innerText = lv; 
-        document.querySelectorAll('.level-btn').forEach((b, i) => b.classList.toggle('active', i === lv - 1)); 
-        resetGame(); 
-    }
+    document.getElementById('sc-start').classList.remove('active');
+    document.getElementById('sc-result').classList.remove('active');
+    document.getElementById('sc-quiz').classList.add('active');
+    next();
+}
+
+function next() {
+    if (state.qNum >= state.pool.length) { showResult(); return; }
+    state.current = state.pool[state.qNum];
+    state.qNum++;
     
-    function resetGame() { questionIndex = 0; correctTotal = 0; missTotal = 0; updateUI(); nextProblem(); }
-    function inputNum(n) { if (currentInput.length < 6) { currentInput += n; document.getElementById('display-value').innerText = currentInput; } }
-    function clearInput() { currentInput = ""; document.getElementById('display-value').innerText = ""; }
-    function updateUI() { document.getElementById('q-count').innerText = totalQuestions - questionIndex; document.getElementById('correct-count').innerText = correctTotal; document.getElementById('miss-count').innerText = missTotal; }
+    document.getElementById('progress').innerText = `${state.qNum} / ${state.pool.length}`;
+    document.getElementById('cnt-ok').innerText = state.ok;
+    document.getElementById('cnt-ng').innerText = state.ng;
+    
+    const optDiv = document.getElementById('options'); optDiv.innerHTML = '';
+    const question = (state.mode === 'ja-en') ? state.current.jp : state.current.en;
+    const correct = (state.mode === 'ja-en') ? state.current.en : state.current.jp;
+    document.getElementById('q-text').innerText = question;
 
-    function generateTerm(isFirst = false) {
-        let num;
-        if (level === 5) {
-            num = (Math.random() > 0.5) ? (Math.floor(Math.random() * 90) + 10) : (Math.floor(Math.random() * 9) + 1);
-        } else {
-            num = Math.floor(Math.random() * 9) + 1;
-        }
-        
-        const sign = Math.random() > 0.5 ? '+' : '-'; 
-        const innerSign = Math.random() > 0.5 ? '' : '-';
-        
-        if (isFirst) { 
-            let firstMax = (level === 5) ? 99 : 9;
-            let firstNum = Math.floor(Math.random() * (firstMax * 2 + 1)) - firstMax; 
-            if(firstNum === 0) firstNum = 1;
-            return { text: `${firstNum}`, val: firstNum }; 
-        }
-        
-        if (sign === '-' && innerSign === '-') return { text: `- (-${num})`, val: num, hint: `- (-${num}) → +${num}` };
-        if (sign === '-' && innerSign === '') return { text: `- (${num})`, val: -num, hint: `- (${num}) → -${num}` };
-        if (sign === '+' && innerSign === '-') return { text: `+ (-${num})`, val: -num, hint: `+ (-${num}) → -${num}` };
-        return { text: `+ (${num})`, val: num, hint: `+ (${num}) → +${num}` };
-    }
+    const currentCat = getCategory(state.current);
+    const distractors = [];
+    const seenChoices = new Set([correct]);
 
-    function nextProblem() {
-        wrongCountInProblem = 0; clearInput(); let termsCount = level + 1; let expr = ""; let total = 0; let hints = [];
-        for (let i = 0; i < termsCount; i++) { 
-            let res = generateTerm(i === 0); 
-            expr += (i === 0 ? "" : " ") + res.text; 
-            total += res.val; 
-            if (res.hint) hints.push(res.hint); 
-        }
-        currentAnswer = total; currentHint = "💡ヒント：<br>" + hints.join(" | "); 
-        document.getElementById('problem').innerHTML = expr + " = ?";
-        document.getElementById('hint-area').style.display = "none"; document.getElementById('enter-btn').disabled = false;
-    }
+    const findDistractors = (candidates) => {
+        const shuffled = [...candidates].sort(() => Math.random() - 0.5);
+        for (let w of shuffled) {
+            const val = (state.mode === 'ja-en') ? w.en : w.jp;
+            if (seenChoices.has(val)) continue;
 
-    function checkAnswer() {
-        if (currentInput === "" || currentInput === "-") return;
-        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-
-        if (parseInt(currentInput) === currentAnswer) {
-            const msg = msgCorrect[Math.floor(Math.random() * msgCorrect.length)];
-            showFeedback('correct', msg);
-            correctTotal++;
-            document.getElementById('enter-btn').disabled = true;
-            setTimeout(proceed, 1000);
-        } else {
-            wrongCountInProblem++;
-            let maxChances = (level >= 4) ? 2 : 1;
-
-            if (wrongCountInProblem < maxChances) {
-                const msg = msgWrong[Math.floor(Math.random() * msgWrong.length)];
-                showFeedback('wrong', msg);
-                document.getElementById('hint-area').innerHTML = currentHint;
-                document.getElementById('hint-area').style.display = "block";
-                clearInput();
-            } else {
-                showFeedback('miss', "");
-                missTotal++;
-                document.getElementById('enter-btn').disabled = true;
-                setTimeout(proceed, 2200);
+            // 「数」と「数字」のような包含関係による紛らわしさを排除
+            if (state.mode === 'en-ja') {
+                if (val.includes(correct) || correct.includes(val)) continue;
             }
+
+            distractors.push(val);
+            seenChoices.add(val);
+            if (distractors.length === 3) return true;
         }
+        return false;
+    };
+
+    // 1. 同カテゴリーから優先抽出
+    const catCandidates = wordStock.filter(w => w.en.toLowerCase() !== state.current.en.toLowerCase() && getCategory(w) === currentCat);
+    const finished = findDistractors(catCandidates);
+
+    // 2. 不足分を全体から補充
+    if (!finished) {
+        findDistractors(wordStock.filter(w => w.en.toLowerCase() !== state.current.en.toLowerCase()));
     }
 
-    function proceed() { 
-        questionIndex++; 
-        if (questionIndex >= totalQuestions) { 
-            showResult(); 
-        } else { 
-            updateUI(); 
-            nextProblem(); 
-        } 
-    }
+    const choices = [correct, ...distractors].sort(() => Math.random() - 0.5);
+    choices.forEach(c => {
+        const b = document.createElement('button');
+        b.className = 'opt-btn'; b.innerText = c;
+        b.onclick = () => check(c, b, correct);
+        optDiv.appendChild(b);
+    });
+}
 
-    function showResult() { 
-        document.getElementById('game-screen').style.display = "none"; 
-        document.getElementById('result-screen').style.display = "flex"; 
-        const score = Math.round((correctTotal / totalQuestions) * 100); 
-        document.getElementById('final-score').innerText = score; 
-        document.getElementById('final-correct').innerText = correctTotal; 
-        document.getElementById('final-miss').innerText = missTotal; 
+function check(selected, btn, correct) {
+    document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+    const fb = document.getElementById('feedback');
+    if (selected === correct) {
+        state.ok++; btn.classList.add('correct-ans');
+        fb.innerText = '⭕'; fb.style.color = '#48bb78'; playFunSound(true);
+        fb.classList.remove('show-fb'); void fb.offsetWidth; fb.classList.add('show-fb');
+        setTimeout(next, 600);
+    } else {
+        state.ng++; state.mistakes.push(state.current); btn.classList.add('wrong-ans');
+        document.querySelectorAll('.opt-btn').forEach(b => { if(b.innerText === correct) b.classList.add('correct-ans'); });
+        fb.innerText = '❌'; fb.style.color = '#f56565'; playFunSound(false);
+        fb.classList.remove('show-fb'); void fb.offsetWidth; fb.classList.add('show-fb');
+        setTimeout(next, 1500);
     }
+}
 
-    nextProblem();
+function goHome() {
+    document.getElementById('sc-result').classList.remove('active');
+    document.getElementById('sc-quiz').classList.remove('active');
+    document.getElementById('sc-start').classList.add('active');
+}
+
+function showResult() {
+    document.getElementById('sc-quiz').classList.remove('active');
+    document.getElementById('sc-result').classList.add('active');
+    document.getElementById('final-score').innerText = `${state.pool.length}問中 ${state.ok}問 正解！`;
+    const list = document.getElementById('mistake-list');
+    const area = document.getElementById('mistake-area');
+    list.innerHTML = '';
+    if (state.mistakes.length > 0) {
+        area.style.display = 'block';
+        const uniqueMistakes = Array.from(new Map(state.mistakes.map(m => [m.en, m])).values());
+        uniqueMistakes.forEach(m => {
+            const d = document.createElement('div');
+            d.style.cssText = "padding:8px; border-bottom:1px solid #fed7d7; color:#2d3748; font-weight:bold;";
+            d.innerText = `${m.en} ： ${m.jp}`;
+            list.appendChild(d);
+        });
+    } else {
+        area.style.display = 'none';
+        const p = document.createElement('p');
+        p.innerText = "50問全問正解！完璧です！✨";
+        p.style.cssText = "color:#48bb78; font-size:20px; font-weight:bold; margin:20px 0;";
+        list.appendChild(p);
+    }
+}
 </script>
 </body>
 </html>
